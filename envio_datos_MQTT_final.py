@@ -1,35 +1,36 @@
 # -*- coding: utf-8 -*-
 import paho.mqtt.publish as publish
 import random
-channelID = "xxxxxxx" # canal
-apiKey = "xxxxxxxxxxxxxx" # key para escribir
 
-useUnsecuredTCP = True # conexión predeterminada
-useUnsecuredWebsockets = False # socket por el puerto 80 
+channelID = "xxxxxx" # canal
 
-mqttHost = "mqtt.thingspeak.com"
-# Parámetros para las conexiones
+useUnsecuredTCP = True # comunicación por TCP
+useUnsecuredWebsockets = False # comunicación por socket web
+mqtthost = "mqtt3.thingspeak.com"
+
+mqtt_client_ID = "xxxxxxxxxxxxxxxx" # copiar y pegar de thingspeak
+mqtt_username  = "xxxxxxxxxxxxxxxx"
+mqtt_password  = "xxxxxxxxxxxxxxxx"
+
 if useUnsecuredTCP:
     tTransport = "tcp"
     tPort = 1883
     tTLS = None
+
 if useUnsecuredWebsockets:
     tTransport = "websockets"
     tPort = 80
     tTLS = None
 
-# crear cadena de topic
-topic = "channels/" + channelID + "/publish/" + apiKey
+dato = random.randint(20, 30)        
+topic = "channels/" + channelID + "/publish"
+tPayload = "field1=" + str(dato)
 
-dato = random.randint(20, 30)
-# campo de datos
-tPayload = "field1=" + str(dato) 
-# publicación de los datos
 try:
-    publish.single(topic, payload=tPayload, 
-                   hostname=mqttHost, port=tPort, tls=tTLS, 
-                   transport=tTransport)
+    publish.single(topic, payload=tPayload, hostname=mqtthost, port=tPort, 
+                   tls=tTLS, transport=tTransport, client_id=mqtt_client_ID,
+                   auth={'username':mqtt_username,'password':mqtt_password})
     print("Dato publicado: ", dato)
-except:
-    print("Fallo al publicar los datos")
     
+except:
+    print ("Fallo al publicar los datos")
